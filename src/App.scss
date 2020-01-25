@@ -1,0 +1,113 @@
+@import url('https://fonts.googleapis.com/css?family=Roboto:400,500&display=swap');
+
+* {
+  margin: 0;
+  padding: 0;
+  outline: 0;
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+  background-color: #333;
+  
+  .app {
+    font-family: Roboto, sans-serif;
+
+    .gallery {
+      display: flex;
+      position: fixed;
+      top: 0;
+      right: 0;
+      left: 0;
+      height: 300px;
+      z-index: 2;
+      overflow-x: scroll;
+      opacity: 0.65;
+      padding: 0 5px;
+
+      img {
+        width: 200px;
+        margin: 0 2px;
+      }
+    }
+
+    .modalPreview {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      position: fixed;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      z-index: 3;
+      background-color: rgba(0, 0, 0, 0.4);
+
+      .previewContainer {
+        position: relative;
+
+        img {
+          width: 600px;
+          height: 900px;
+        }
+
+        .closeButton {
+          display: flex;
+          flex-direction: column;
+          justify-content: center;
+          align-items: center;
+          width: 60px;
+          height: 60px;
+          position: absolute;
+          top: 0;
+          right: 0;
+          background-color: rgba(0, 0, 0, 0.75);
+
+          span {
+            display: block;
+            background-color: #fff;
+            width: 30px;
+            height: 2px;
+
+            &:nth-child(1) {
+              transform: rotate(45deg);
+              position: absolute;
+            }
+
+            &:nth-child(2) {
+              transform: rotate(-45deg);
+              position: absolute;
+            }
+          }
+        }
+      }
+
+    }
+
+    .errorScreen {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      position: fixed;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      left: 0;
+      background-color: #212121;
+      z-index: 2;
+      display: none;
+
+      span {
+        color: #fff;
+        font-size: 20px;
+        line-height: 30px;
+        max-width: 80%;
+        text-align: center;
+      }
+    }
+  }
+}

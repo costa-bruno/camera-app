@@ -1,45 +1,46 @@
 import React, { useState, useEffect } from 'react';
-import Camera from 'react-html5-camera-photo';
+import Camera, { FACING_MODES, IMAGE_TYPES } from 'react-html5-camera-photo';
 import 'react-html5-camera-photo/build/css/index.css';
 
 import "./App.scss";
+import Buttons from './components/Buttons/Buttons';
+import Gallery from './components/Gallery/Gallery';
+import ErrorScreen from './components/ErrorScreen/ErrorScreen';
  
 function App (props) {
 
   const initialError = {
     hasError: false,
     errorMessage: ""
-  }
-
-  const initialPreview = {
-    hasPreview: false,
-    previewUrl: ""
-  }
+  };
 
   const [error, setError] = useState(initialError);
   const [photos, setPhotos] = useState([]);
-  const [preview, setPreview] = useState(initialPreview);
 
   useEffect(() => {
     console.log(error);
-  }, [error])
+  }, [error]);
 
   useEffect(() => {
     console.log(photos)
-  }, [photos])
-
-  useEffect(() => {
-    console.log(preview)
-  }, [preview])
+  }, [photos]);
   
   const handleTakePhoto = (dataUri) => {
-    console.log('Foto tirada');
+    console.log('Photo taken');
     console.log(dataUri);
+    const _photo = {
+      photo: dataUri,
+      id: new Date()
+    };
+
     setPhotos([
       ...photos,
-      dataUri
+      {
+        photo: _photo.photo,
+        id: _photo.id
+      }
     ]);
-  }
+  };
 
   const handleError = (cameraError) => {
     console.log(cameraError);
@@ -47,65 +48,31 @@ function App (props) {
       hasError: true,
       errorMessage: "Você precisa garantir permissão de acesso à câmera para continuar."
     });
-  }
+  };
 
-  const handlePreview = (photoToPreview) => {
-    setPreview({
-      ...preview,
-      showPreview: true,
-      previewUrl: photoToPreview
-    });
-  }
-
-  const toggleShowPreview = () => {
-    setPreview({
-      ...preview,
-      showPreview: !preview.showPreview,
-      previewUrl: ""
-    });
-  }
+  const deletePhoto = photoId => {
+    const _photos = photos.filter(photo => photo.id !== photoId);
+    setPhotos(_photos);
+  };
  
   return (
     <div className="app">
-      {photos.length > 0 && (
-        <div className="gallery">
-          {photos.map((photo, index) => (
-            <img 
-              src={photo} 
-              alt="thumbnail preview"
-              key={index}
-              onClick={() => handlePreview(photo)}
-            />
-          ))}
-        </div>
-      )}
-      {preview.showPreview && (
-        <div className="modalPreview">
-          <div className="previewContainer">
-            <div className="closeButton" onClick={() => toggleShowPreview()}>
-              <span className="closeArrow" />
-              <span className="closeArrow" />
-            </div>
-
-            <img 
-              src={preview.previewUrl}
-              alt="thumbnail preview"
-            />
-          </div>
-        </div>
-      )}
+      <ErrorScreen error={error} />
       <Camera
-        onCameraStart={console.log("STATUS::: Camera iniciada")}
-        idealResolution={{width: 360, height: 640}}
+        onCameraStart={console.log("Status: Camera started")}
+        isFullscreen={true}
         onCameraError={(cameraError) => {handleError(cameraError)}}
         onTakePhoto={(dataUri) => {handleTakePhoto(dataUri)}}
         sizeFactor={1}
+        idealFacingMode = {FACING_MODES.ENVIRONMENT}
+        isImageMirror = {false}
+        imageType = {IMAGE_TYPES.JPG}
       />
-      {error.hasError && (
-        <div className="errorScreen">
-          <span>{error.errorMessage}</span>
-        </div>
-      )}
+      <Gallery 
+        photos={photos} 
+        deletePhoto={deletePhoto}
+      />
+      <Buttons photosLength={photos.length} />
     </div>
   );
 }
